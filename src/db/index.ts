@@ -11,7 +11,7 @@ export const initDB = async () => {
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
         name VARCHAR(20) NOT NULL,
-        email VARCHAR(20) UNIQUE NOT NULL,
+        email VARCHAR(50) UNIQUE NOT NULL,
         password TEXT NOT NULL,
         role varchar(20) default 'contributor',    
         created_at TIMESTAMP DEFAULT NOW(),
@@ -23,7 +23,7 @@ export const initDB = async () => {
       CREATE TABLE IF NOT EXISTS issues(
       id SERIAL PRIMARY KEY,
       title VARCHAR(150) NOT NULL,
-      description VARCHAR(MIN 20) NOT NULL,
+      description VARCHAR NOT NULL,
       type VARCHAR(20) NOT NULL,
       status VARCHAR(20) DEFAULT 'open',
       reporter_id INT NOT NULL,

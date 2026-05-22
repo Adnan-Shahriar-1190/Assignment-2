@@ -1,8 +1,7 @@
-export interface Iissue{
-    name:string;
-    email:string;
-    password:string;
-    age:string;
-    is_active?: boolean;
-    role?: "admin"|"user"|"agent";
+export interface Iissue {
+  title: string;
+  description: string;
+  type: "bug" | "feature_request";
+  status?: "open" | "in_progress" | "resolved";
+  reporter_id: number;
 }
