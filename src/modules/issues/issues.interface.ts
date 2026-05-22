@@ -1,0 +1,8 @@
+export interface Iissue{
+    name:string;
+    email:string;
+    password:string;
+    age:string;
+    is_active?: boolean;
+    role?: "admin"|"user"|"agent";
+}
