@@ -81,21 +81,32 @@ const getSingleIssueFromDB = async (id: string) => {
   return result;
 };
 
-const updateIssuesIntoDB = async (payload: Iissue, id: string) => {
-  const { title, description, type, status } = payload;
+const updateIssuesIntoDB = async (
+  payload: Iissue,
+  id: string,
+  user: JwtPayload,
+) => {
+  const { title, description, type } = payload;
 
   const result = await pool.query(
     `
-     update issues set
-      title = coalesce($1, title),
-      description = coalesce($2, description),
-      type = coalesce($3, type),
-      status = coalesce($4, status),
-      updated_at = now()
-      where id = $5
+      update issues set
+        title = coalesce($1, title),
+        description = coalesce($2, description),
+        type = coalesce($3, type),
+        updated_at = now()
+      where id = $4
+      and (
+        $5 = 'maintainer'
+        or (
+          $5 = 'contributor'
+          and reporter_id = $6
+          and status = 'open'
+        )
+      )
       returning *
     `,
-    [title, description, type, status, id],
+    [title, description, type, id, user.role, user.id],
   );
 
   return result;

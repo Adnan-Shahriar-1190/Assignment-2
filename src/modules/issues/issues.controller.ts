@@ -1,6 +1,5 @@
 import { type Request, type Response } from "express";
 import { issuesService } from "./issues.service";
-import type { JwtPayload } from "jsonwebtoken";
 
 const createIssues = async (req: Request, res: Response) => {
   try {
@@ -27,7 +26,7 @@ const createIssues = async (req: Request, res: Response) => {
 const getSortedIssues = async (req: Request, res: Response) => {
   try {
     const result = await issuesService.getSortedIssuesFromDB(req.query);
-    
+
     res.status(200).json({
       success: true,
       message: "Issues retrieved successfully",
@@ -74,6 +73,7 @@ const updateIssues = async (req: Request, res: Response) => {
     const result = await issuesService.updateIssuesIntoDB(
       req.body,
       id as string,
+      req.user,
     );
 
     if (result.rows.length === 0) {
