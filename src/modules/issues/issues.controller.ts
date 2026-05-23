@@ -9,7 +9,7 @@ const createIssues = async (req: Request, res: Response) => {
       reporter_id,
     );
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       message: "Issue created successfully",
       data: result.rows[0],
@@ -55,7 +55,7 @@ const getSingleIssue = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Issue fetched",
+      message: "Issue retrived successfully",
       data: result.rows[0],
     });
   } catch (error: any) {
@@ -111,7 +111,7 @@ const deleteIssues = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Issue Deleted",
+      message: "Issue deleted successfully",
       //data: result.rows[0],
     });
   } catch (error: any) {
