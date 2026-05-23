@@ -25,8 +25,8 @@ const logInUser = async (req: Request, res: Response) => {
 
     res.status(200).json({
       success: true,
-      message: "Logged In Successfully",
-      //data: result.rows[0],
+      message: "Login successful",
+      data: result,
     });
   } catch (error: any) {
     res.status(500).json({
@@ -36,6 +36,7 @@ const logInUser = async (req: Request, res: Response) => {
     });
   }
 };
+
 export const authController = {
   signUpUser,
   logInUser,
