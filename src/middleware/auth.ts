@@ -18,37 +18,37 @@ const auth = (...roles: ROLES[]) => {
           success: false,
           message: "Unauthorized Access",
         });
-
-        const decoded = jwt.verify(
-          token as string,
-          config.jwt_secret as string,
-        ) as JwtPayload;
-
-        const userData = await pool.query(
-          `
-            select * from users where email=$1
-            `,
-          [decoded.email],
-        );
-
-        if (userData.rows.length === 0) {
-          res.status(404).json({
-            success: false,
-            message: "User not found",
-          });
-        }
-        const user = userData.rows[0];
-
-        if (roles.length && !roles.includes(user.role)) {
-          res.status(401).json({
-            success: false,
-            message: "Forbidden",
-          });
-        }
-
-        //req.user = decoded;
-        next();
       }
+
+      const decoded = jwt.verify(
+        token as string,
+        config.jwt_secret as string,
+      ) as JwtPayload;
+
+      const userData = await pool.query(
+        `
+        select * from users where email=$1
+        `,
+        [decoded.email],
+      );
+
+      const user = userData.rows[0];
+
+      if (userData.rows.length === 0) {
+        res.status(404).json({
+          success: false,
+          message: "User not found",
+        });
+      }
+
+      if (roles.length && !roles.includes(user.role)) {
+        res.status(401).json({
+          success: false,
+          message: "Forbidden",
+        });
+      }
+      req.user = user;
+      next();
     } catch (error) {
       next(error);
     }
