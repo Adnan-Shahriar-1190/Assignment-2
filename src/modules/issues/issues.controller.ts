@@ -26,12 +26,12 @@ const createIssues = async (req: Request, res: Response) => {
 
 const getSortedIssues = async (req: Request, res: Response) => {
   try {
-    const result = await issuesService.getSortedIssuesFromDB(req.body);
-
+    const result = await issuesService.getSortedIssuesFromDB(req.query);
+    
     res.status(200).json({
       success: true,
-      message: "User Created",
-      //data: result.rows[0],
+      message: "Issues retrieved successfully",
+      data: result,
     });
   } catch (error: any) {
     res.status(500).json({

@@ -17,7 +17,58 @@ const createIssuesIntoDB = async (payload: Iissue, rep_id: number) => {
   return result;
 };
 
-const getSortedIssuesFromDB = async (payload: any) => {};
+const getSortedIssuesFromDB = async (query: any) => {
+  const { sort = "newest", type, status } = query;
+
+  const orderBy = sort === "oldest" ? "asc" : "desc";
+
+  const issuesResult = await pool.query(
+    `
+      select *
+      from issues
+      where type = coalesce($1, type)
+      and status = coalesce($2, status)
+      order by created_at ${orderBy}
+    `,
+    [type, status],
+  );
+
+  const issues = issuesResult.rows;
+
+  const result = [];
+
+  for (const issue of issues) {
+    const reporterResult = await pool.query(
+      `
+        select id, name, role
+        from users
+        where id = $1
+      `,
+      [issue.reporter_id],
+    );
+
+    const reporter = reporterResult.rows[0];
+
+    result.push({
+      id: issue.id,
+      title: issue.title,
+      description: issue.description,
+      type: issue.type,
+      status: issue.status,
+      reporter: reporter
+        ? {
+            id: reporter.id,
+            name: reporter.name,
+            role: reporter.role,
+          }
+        : null,
+      created_at: issue.created_at,
+      updated_at: issue.updated_at,
+    });
+  }
+
+  return result;
+};
 
 const getSingleIssueFromDB = async (id: string) => {
   const result = await pool.query(
