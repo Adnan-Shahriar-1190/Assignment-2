@@ -3,22 +3,15 @@ export const USER_ROLE = {
   maintainer: "maintainer",
 } as const;
 
-export type ROLES = (typeof USER_ROLE)[keyof typeof USER_ROLE];
-
-
 export const SORT_ORDER = {
   newest: "newest",
   oldest: "oldest",
 } as const;
 
-export type SortOrder = (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
-
 export const ISSUE_TYPE = {
   bug: "bug",
   feature_request: "feature_request",
 } as const;
-
-export type IssueType = (typeof ISSUE_TYPE)[keyof typeof ISSUE_TYPE];
 
 export const ISSUE_STATUS = {
   open: "open",
@@ -26,6 +19,9 @@ export const ISSUE_STATUS = {
   resolved: "resolved",
 } as const;
 
+export type ROLES = (typeof USER_ROLE)[keyof typeof USER_ROLE];
+export type SortOrder = (typeof SORT_ORDER)[keyof typeof SORT_ORDER];
+export type IssueType = (typeof ISSUE_TYPE)[keyof typeof ISSUE_TYPE];
 export type IssueStatus = (typeof ISSUE_STATUS)[keyof typeof ISSUE_STATUS];
 
 export interface IQueryParam {
