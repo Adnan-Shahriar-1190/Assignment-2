@@ -4,6 +4,7 @@ import { authRoute } from "./modules/auth/auth.route";
 import { issuesRoute } from "./modules/issues/issues.route";
 const app: Application = express();
 import CookieParser from "cookie-parser";
+import globalErrorHandler from "./middleware/globalErrorHandler";
 
 app.use(express.json());
 app.use(express.text());
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use('/api/auth',authRoute);
 app.use('/api/issues',issuesRoute);
+app.use(globalErrorHandler);
 
 
 export default app;

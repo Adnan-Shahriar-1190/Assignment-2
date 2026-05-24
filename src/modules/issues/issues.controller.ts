@@ -18,7 +18,7 @@ const createIssues = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: error,
+      errors: error,
     });
   }
 };
@@ -26,6 +26,13 @@ const createIssues = async (req: Request, res: Response) => {
 const getSortedIssues = async (req: Request, res: Response) => {
   try {
     const result = await issuesService.getSortedIssuesFromDB(req.query);
+
+    if (result.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No issues found",
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -36,7 +43,7 @@ const getSortedIssues = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: error,
+      errors: error,
     });
   }
 };
@@ -46,8 +53,8 @@ const getSingleIssue = async (req: Request, res: Response) => {
   try {
     const result = await issuesService.getSingleIssueFromDB(id as string);
 
-    if (result.rows.length === 0) {
-      res.status(500).json({
+    if (!result) {
+      res.status(404).json({
         success: false,
         message: "Issue not found",
       });
@@ -56,13 +63,13 @@ const getSingleIssue = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: "Issue retrived successfully",
-      data: result.rows[0],
+      data: result,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: error,
+      errors: error,
     });
   }
 };
@@ -77,7 +84,7 @@ const updateIssues = async (req: Request, res: Response) => {
     );
 
     if (result.rows.length === 0) {
-      res.status(500).json({
+      res.status(404).json({
         success: false,
         message: "Issue not found",
       });
@@ -92,7 +99,7 @@ const updateIssues = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: error,
+      errors: error,
     });
   }
 };
@@ -118,7 +125,7 @@ const deleteIssues = async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: error,
+      errors: error,
     });
   }
 };

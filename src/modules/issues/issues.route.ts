@@ -9,7 +9,7 @@ const router = Router();
 router.post("/", auth(USER_ROLE.contributor, USER_ROLE.maintainer), validatIssue, issuesController.createIssues);
 router.get("/", issuesController.getSortedIssues);
 router.get("/:id", issuesController.getSingleIssue);
-router.patch("/:id", auth(USER_ROLE.contributor, USER_ROLE.maintainer),validatIssue, issuesController.updateIssues);
+router.patch("/:id", auth(USER_ROLE.contributor, USER_ROLE.maintainer), issuesController.updateIssues);
 router.delete("/:id", auth(USER_ROLE.maintainer), issuesController.deleteIssues );
 
 export const issuesRoute = router;
