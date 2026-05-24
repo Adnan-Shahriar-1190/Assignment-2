@@ -55,12 +55,12 @@ const logInUserIntoDB = async (payload: {
     role: user.role,
     email: user.email,
   };
-  const accessToken = jwt.sign(jwtPayload, config.jwt_secret, {
+  const token  = jwt.sign(jwtPayload, config.jwt_secret, {
     expiresIn: "1d",
   });
 
   delete user.password;
-  return { accessToken, user };
+  return { token , user };
 };
 
 export const authService = {

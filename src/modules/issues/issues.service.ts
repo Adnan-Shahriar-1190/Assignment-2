@@ -2,6 +2,7 @@ import { get } from "node:http";
 import { pool } from "../../db";
 import type { Iissue } from "./issues.interface";
 import type { JwtPayload } from "jsonwebtoken";
+import type { IQueryParam } from "../../types";
 
 const createIssuesIntoDB = async (payload: Iissue, rep_id: number) => {
   const { title, description, type, status } = payload;
@@ -19,14 +20,12 @@ const createIssuesIntoDB = async (payload: Iissue, rep_id: number) => {
 
 const getSortedIssuesFromDB = async (query: any) => {
   const { sort = "newest", type, status } = query;
-
   const orderBy = sort === "oldest" ? "asc" : "desc";
 
   const issuesResult = await pool.query(
     `
-      select *
-      from issues
-      where type = coalesce($1, type)
+      select * from issues where
+      type = coalesce($1, type)
       and status = coalesce($2, status)
       order by created_at ${orderBy}
     `,
@@ -40,13 +39,10 @@ const getSortedIssuesFromDB = async (query: any) => {
   for (const issue of issues) {
     const reporterResult = await pool.query(
       `
-        select id, name, role
-        from users
-        where id = $1
+        select id, name, role from users where id = $1
       `,
       [issue.reporter_id],
     );
-
     const reporter = reporterResult.rows[0];
 
     result.push({
@@ -71,14 +67,43 @@ const getSortedIssuesFromDB = async (query: any) => {
 };
 
 const getSingleIssueFromDB = async (id: string) => {
-  const result = await pool.query(
+  const issueResult = await pool.query(
     `
-      select * from issues where id=$1
+      select * from issues where id = $1
     `,
     [id],
   );
+  const issue = issueResult.rows[0];
 
-  return result;
+  if (!issue) {
+    return null;
+  }
+
+  const reporterResult = await pool.query(
+    `
+      select id, name, role from users where id = $1
+    `,
+    [issue.reporter_id],
+  );
+
+  const reporter = reporterResult.rows[0];
+
+  return {
+    id: issue.id,
+    title: issue.title,
+    description: issue.description,
+    type: issue.type,
+    status: issue.status,
+    reporter: reporter
+      ? {
+          id: reporter.id,
+          name: reporter.name,
+          role: reporter.role,
+        }
+      : null,
+    created_at: issue.created_at,
+    updated_at: issue.updated_at,
+  };
 };
 
 const updateIssuesIntoDB = async (
